@@ -3,18 +3,28 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class Square extends React.Component {
-    render() {
-      return (
-        <button className="square">
-          {/* TODO */}
-        </button>
-      );
-    }
+  constructor(props) {
+    super(props);
+    //this.state is the private values of the component it was created in
+    this.state = {
+      value: null
+    };
   }
+  render() {
+    return (
+      <button className="square" onClick={
+        ()=>alert('click')
+        //equivalent to {function() {alert('click')}} but avoids binding issues of "this" in an event handler
+      }>
+        {this.props.value}
+      </button>
+    );
+  }
+}
   
   class Board extends React.Component {
     renderSquare(i) {
-      return <Square />;
+      return <Square value={i}/>;
     }
   
     render() {
