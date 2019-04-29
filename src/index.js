@@ -2,33 +2,57 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-class Square extends React.Component {
-  constructor(props) {
-    super(props);
-    //this.state is the private values of the component it was created in
-    this.state = {
-      value: null
-    };
-  }
-  render() {
-    return (
-      <button className="square" onClick={
-        ()=>alert('click')
-        //equivalent to {function() {alert('click')}} but avoids binding issues of "this" in an event handler
-      }>
-        {this.props.value}
-      </button>
-    );
-  }
+// class Square extends React.Component {
+//   render() {
+//     return (
+//       <button className="square" onClick={
+//         ()=>this.props.onClick()
+//         //equivalent to {function() {alert('click')}} but avoids binding issues of "this" in an event handler
+//         //automatic two way data binding
+//       }>
+//         {this.props.value}
+//       </button>
+//     );
+//   }
+// }
+
+//since square was changed to only render, not actually maintain its own state, it can be refactored as a function component
+function Square(props) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
 }
   
   class Board extends React.Component {
+    //in react, a shared state should be maintained by a parent class and passed
+    constructor(props) {
+      super(props);
+      this.state = {
+        squares: Array(9).fill(null),
+        xIsNext: true,
+      };
+    }
+
+    handleClick(i) {
+      const squares = this.state.squares.slice();
+      squares[i] = this.state.xIsNext ? 'X' : 'O';
+      this.setState({
+        squares: squares,
+        xIsNext: !this.state.xIsNext,
+      });
+    }
     renderSquare(i) {
-      return <Square value={i}/>;
+      return (<Square value={this.state.squares[i]}
+      onClick={
+        ()=>this.handleClick(i)
+      }
+      />);
     }
   
     render() {
-      const status = 'Next player: X';
+      const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
   
       return (
         <div>
